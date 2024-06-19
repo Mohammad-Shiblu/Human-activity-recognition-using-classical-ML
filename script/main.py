@@ -11,19 +11,16 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from src.data_loader import load_data
+from src.preprocess import preprocess_data
+
 if __name__ == "__main__":
     data_dir = "data/raw/"
-    train_file_name = os.path.join(data_dir, "train.csv")
-    test_file_name = os.path.join(data_dir, "test.csv" )
-    train_df = pd.read_csv(train_file_name)
-    test_df = pd.read_csv(test_file_name)
 
-    X_train = train_df.drop(columns= ["subject", "Activity"])
-    X_test = test_df.drop(columns= ["subject", "Activity"])
-
-    label_encoder = LabelEncoder()
-    y_train = label_encoder.fit_transform(train_df["Activity"])
-    y_test = label_encoder.transform(test_df["Activity"])
+    train_df, test_df = load_data(data_dir, "train.csv", "test.csv")
+    
+    X_train, y_train, X_test, y_test = preprocess_data(train_df, test_df, ["subject", "Activity"])
     
     classifiers = {
         "SVM": SVC(),
